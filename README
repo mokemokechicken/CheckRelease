@@ -1,0 +1,42 @@
+How To Use:
+    python check_release.py <root_path> [<exclude_class_list_filename>]
+    
+        root_path: root directory of the source codes to find .m, .mm, .h files recursively.
+        exclude_class_list_filename: filename of "Don't Check This Class" list. In the file, Write ONE Class name in ONE Line.
+
+Specification:
+    This program find that retained or copied properties those seem not to be released in Objective-C.
+    The result will output to stdout.
+    You should remember that it is NOT perfect. (^^;
+    
+    It supposed that:
+
+    * "Property declaration" is written in @interface - @end block.
+
+    * Property declaration may be written in .h, .m, .mm files.
+
+    * "Release description" is written in @implemantation - @end block of .m or .mm files.
+    
+    * Property declaration is 'ONE property is in ONE line', like:
+        
+        @property (nonatomic, retain) NSNumber *userId;
+        @property (nonatomic, retain) NSNumber *score;
+        
+        NOT
+        
+        @property (nonatomic, retain) NSNumber *userId, *score;
+    
+    
+    * Syntax of release description of 'myName' property is like:
+        
+        self.myName = nil;
+        
+        or
+        
+        [myName release] or [_myName release] or [myName_ release]    (autorelease is also OK)
+        
+        or
+        
+        [self setMyName:nil];
+    
+    * The place of release description is not checked whether it will be executed when dealloc is called.
